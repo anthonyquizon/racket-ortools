@@ -5,8 +5,7 @@
 
 using namespace operations_research;
 
-std::vector<IntVar*> vectorIntVar(IntVar** vars) {
-  int len = sizeof(vars)/sizeof(vars[0]);
+std::vector<IntVar*> vectorIntVar(IntVar** vars, int len) {
   std::vector<IntVar*> vec_vars(vars, vars + len);
   return vec_vars;
 }
@@ -20,12 +19,13 @@ Solver *solver_new(const char *c) {
 IntVar *solver_MakeIntVar(Solver *solver, int min, int max, const char *c) {
   return solver->MakeIntVar(min, max, std::string(c));
 }
-DecisionBuilder *solver_MakePhase(Solver *solver, IntVar **vars, Solver::IntVarStrategy var_str, Solver::IntValueStrategy val_str) {
-  return solver->MakePhase(vectorIntVar(vars), var_str, val_str);
+
+DecisionBuilder *solver_MakePhase(Solver *solver, IntVar **vars, int varLen, Solver::IntVarStrategy var_str, Solver::IntValueStrategy val_str) {
+  return solver->MakePhase(vectorIntVar(vars, varLen), var_str, val_str);
 }
 
-Constraint *solver_MakeAllDifferent(Solver *solver, IntVar **vars) {
-  return solver->MakeAllDifferent(vectorIntVar(vars));
+Constraint *solver_MakeAllDifferent(Solver *solver, IntVar **vars, int varLen) {
+  return solver->MakeAllDifferent(vectorIntVar(vars, varLen));
 }
 
 void solver_AddConstraint(Solver *solver, Constraint *c) {

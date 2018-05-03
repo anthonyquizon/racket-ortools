@@ -42,8 +42,8 @@
 
 (define-ortools solver_new (_fun _string -> _SOLVER-pointer))
 (define-ortools solver_MakeIntVar (_fun _SOLVER-pointer _int _int _string -> _INTVAR-pointer))
-(define-ortools solver_MakeAllDifferent (_fun _SOLVER-pointer (_list i _INTVAR-pointer) -> _CONSTRAINT-pointer))
-(define-ortools solver_MakePhase (_fun _SOLVER-pointer (_list i _INTVAR-pointer) _IntVarStrategy _IntValueStrategy -> _DECISION_BUILDER-pointer))
+(define-ortools solver_MakeAllDifferent (_fun _SOLVER-pointer (_list i _INTVAR-pointer) _int -> _CONSTRAINT-pointer))
+(define-ortools solver_MakePhase (_fun _SOLVER-pointer (_list i _INTVAR-pointer) _int _IntVarStrategy _IntValueStrategy -> _DECISION_BUILDER-pointer))
 
 (define-ortools solver_AddConstraint (_fun _SOLVER-pointer _CONSTRAINT-pointer -> _void))
 (define-ortools solver_Solve (_fun _SOLVER-pointer _DECISION_BUILDER-pointer -> _bool))
@@ -60,22 +60,19 @@
 (define xyvars `(,x ,y))
 (define allvars `(,x ,y ,z))
 
-(solver_AddConstraint solver (solver_MakeAllDifferent solver xyvars))
+(solver_AddConstraint solver (solver_MakeAllDifferent solver xyvars (length xyvars)))
 
-(define db (solver_MakePhase solver allvars 'CHOOSE_FIRST_UNBOUND 'ASSIGN_MIN_VALUE))
+(define db (solver_MakePhase solver allvars (length allvars) 'CHOOSE_FIRST_UNBOUND 'ASSIGN_MIN_VALUE))
+
 (solver_Solve solver db)
 
 (for ([n (in-naturals)]
-      #:when (solver_NextSolution solver db))
+      #:break (not (solver_NextSolution solver db)))
   (displayln 
     (format 
-      ;"Solution ~a:\n x=~a\n y=~a\n z=~a\n" 
-      "Solution ~a:\n x=~a\n"
+      "Solution ~a:\n x=~a\n y=~a\n z=~a\n" 
       n 
       (value_IntVar x)
-      ;(value_IntVar y)
-      ;(value_IntVar z)
-      
-
-      )))
+      (value_IntVar y)
+      (value_IntVar z))))
 
