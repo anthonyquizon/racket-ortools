@@ -4,15 +4,12 @@
          ffi/unsafe/define
          ffi/unsafe/alloc)
 
-(define-ffi-definer define-ortools (ffi-lib "./libcwrapper"))
+(define-ffi-definer define-ortools (ffi-lib "./extern/libcwrapper"))
 
 (define _SOLVER-pointer (_cpointer 'SOLVER))
 (define _INTVAR-pointer (_cpointer 'INTVAR))
 (define _CONSTRAINT-pointer (_cpointer 'CONSTRAINT))
 (define _DECISION_BUILDER-pointer (_cpointer 'DECISION_BUILDER))
-
-;(define-symengine basic_free_heap (_fun _BASIC_STRUCT-pointer -> _int)
-  ;#:wrap (deallocator))
 
 (define _IntVarStrategy
   (_enum '(INT_VAR_DEFAULT 
@@ -40,7 +37,12 @@
            SPLIT_LOWER_HALF
            SPLIT_UPPER_HALF)))
 
-(define-ortools solver_new (_fun _string -> _SOLVER-pointer))
+(define-ortools solver_delete (_fun _SOLVER-pointer -> _void)
+  #:wrap (deallocator))
+
+(define-ortools solver_new (_fun _string -> _SOLVER-pointer)
+  #:wrap (allocator solver_delete))
+
 (define-ortools solver_MakeIntVar (_fun _SOLVER-pointer _int _int _string -> _INTVAR-pointer))
 (define-ortools solver_MakeAllDifferent (_fun _SOLVER-pointer (_list i _INTVAR-pointer) _int -> _CONSTRAINT-pointer))
 (define-ortools solver_MakePhase (_fun _SOLVER-pointer (_list i _INTVAR-pointer) _int _IntVarStrategy _IntValueStrategy -> _DECISION_BUILDER-pointer))
