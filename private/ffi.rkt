@@ -61,3 +61,4 @@
 (define-ortools solver_Solve (_fun _SOLVER-pointer _DECISION_BUILDER-pointer -> _bool))
 (define-ortools solver_NextSolution (_fun _SOLVER-pointer _DECISION_BUILDER-pointer -> _bool))
 (define-ortools value_IntVar (_fun _INTVAR-pointer -> _int))
+

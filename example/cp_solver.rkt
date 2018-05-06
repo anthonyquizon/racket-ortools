@@ -1,29 +1,27 @@
 #lang racket
 
-(require "../private/ffi.rkt")
+(require "../constraint-solver.rkt")
 
 (define numVals 3)
-(define solver (solver_new "CPSimple"))
-(define x (solver_MakeIntVar solver 0 (- numVals 1) "x"))
-(define y (solver_MakeIntVar solver 0 (- numVals 1) "y"))
-(define z (solver_MakeIntVar solver 0 (- numVals 1) "z"))
+(define solver (create-solver "CPSimple"))
+(define x (create-intvar solver 0 (- numVals 1) "x"))
+(define y (create-intvar solver 0 (- numVals 1) "y"))
+(define z (create-intvar solver 0 (- numVals 1) "z"))
 
-(define xyvars `(,x ,y))
 (define allvars `(,x ,y ,z))
 
-(solver_AddConstraint solver (solver_MakeAllDifferent solver xyvars (length xyvars)))
+(define constraint (all-different solver x y))
+(define db (create-phase solver 'CHOOSE_FIRST_UNBOUND 'ASSIGN_MIN_VALUE x y z))
 
-(define db (solver_MakePhase solver allvars (length allvars) 'CHOOSE_FIRST_UNBOUND 'ASSIGN_MIN_VALUE))
-
-(solver_Solve solver db)
+(solve solver db)
 
 (for ([n (in-naturals)]
-      #:break (not (solver_NextSolution solver db)))
+      #:break (not (next-solution solver db)))
   (displayln 
     (format 
       "Solution ~a:\n x=~a\n y=~a\n z=~a\n" 
       n 
-      (value_IntVar x)
-      (value_IntVar y)
-      (value_IntVar z))))
+      (value x)
+      (value y)
+      (value z))))
 

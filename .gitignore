@@ -2,3 +2,6 @@ extern/
 libcwrapper.dylib
 a.out
 foo
+.dep
+.zo
+compiled/
