@@ -27,6 +27,3 @@
       (value_IntVar y)
       (value_IntVar z))))
 
-
-
-
