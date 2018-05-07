@@ -16,8 +16,9 @@ Solver *solver_new(const char *c) {
   return new Solver(std::string(c));
 }
 
-Solver *solver_delete(Solver *solver) {
+int *solver_delete(Solver *solver) {
   delete solver;
+  return 0;
 }
 
 IntVar *solver_MakeIntVar(Solver *solver, int min, int max, const char *c) {

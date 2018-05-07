@@ -12,9 +12,12 @@
 
 (require ffi/unsafe
          ffi/unsafe/define
-         ffi/unsafe/alloc)
+         ffi/unsafe/alloc
+         racket/runtime-path)
+
+(define-runtime-path cwd ".")
          
-(define-ffi-definer define-ortools (ffi-lib "./extern/libcwrapper"))
+(define-ffi-definer define-ortools (ffi-lib (build-path cwd 'up "extern" "libcwrapper")))
 
 (define _SOLVER-pointer (_cpointer 'SOLVER))
 (define _INTVAR-pointer (_cpointer 'INTVAR))
@@ -47,7 +50,7 @@
            SPLIT_LOWER_HALF
            SPLIT_UPPER_HALF)))
 
-(define-ortools solver_delete (_fun _SOLVER-pointer -> _void)
+(define-ortools solver_delete (_fun _SOLVER-pointer -> _int)
   #:wrap (deallocator))
 
 (define-ortools solver_new (_fun _string -> _SOLVER-pointer)
