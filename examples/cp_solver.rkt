@@ -8,8 +8,6 @@
 (define y (create-intvar solver 0 (- numVals 1) "y"))
 (define z (create-intvar solver 0 (- numVals 1) "z"))
 
-(define allvars `(,x ,y ,z))
-
 (define constraint (all-different solver x y))
 (define db (create-phase solver 'CHOOSE_FIRST_UNBOUND 'ASSIGN_MIN_VALUE x y z))
 
